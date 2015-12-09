@@ -53,6 +53,8 @@ int sense = 0;
 
 // Prototypes
 
+uint32_t seconds(uint16_t seconds);
+
 
 // Define variables and constants
 
@@ -67,14 +69,18 @@ void setup() {
 void loop() {
     
     uint16_t sensorInput = analogRead(sense);               // Value at A0
-    uint32_t milliSeconds = 500;
     
-    if (sensorInput > milliSeconds) {                       // waits for milliSeconds
+    if (sensorInput > 500) {                       // waits for milliSeconds
         digitalWrite(pinOn, HIGH);
         unsigned long startMillis = millis();
-        while (millis() - startMillis < milliSeconds);
+        while (millis() - startMillis < seconds(3));
     }
     digitalWrite(pinOn, LOW);                               // Turn off light
+}
+
+uint32_t seconds(uint16_t seconds){
+    uint32_t mSeconds = seconds*1000;
+    return mSeconds;
 }
 
 
