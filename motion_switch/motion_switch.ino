@@ -48,6 +48,8 @@
 
 // Include application, user and local libraries
 
+const int pinOn = 2;
+int sense = 0;
 
 // Prototypes
 
@@ -56,13 +58,27 @@
 
 
 // Add setup code
-void setup()
-{
-    ;
+void setup() {
+    pinMode(pinOn, OUTPUT);
+    pinMode(sense, A0);
 }
 
 // Add loop code
-void loop()
-{
-    ;
+void loop() {
+    
+    uint16_t sensorInput = analogRead(sense);               // Value at A0
+    uint32_t milliSeconds = 500;
+    
+    if (sensorInput > milliSeconds) {                       // waits for milliSeconds
+        digitalWrite(pinOn, HIGH);
+        unsigned long startMillis = millis();
+        while (millis() - startMillis < milliSeconds);
+    }
+    digitalWrite(pinOn, LOW);                               // Turn off light
 }
+
+
+
+
+
+
