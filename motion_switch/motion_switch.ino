@@ -46,41 +46,48 @@
 #   error Platform not defined
 #endif // end IDE
 
-// Include application, user and local libraries
 
-const int pinOn = 2;
-int sense = 0;
+// Include application, user and local libraries
 
 // Prototypes
 
-uint32_t seconds(uint16_t seconds);
+uint32_t seconds(uint32_t seconds);
+void turnLightOnAndWait();
 
 
 // Define variables and constants
 
+const int pinOn = 10;
+int sense = 0;
 
-// Add setup code
+
+// Setup Code
 void setup() {
-    pinMode(pinOn, OUTPUT);
-    pinMode(sense, A0);
+  pinMode(pinOn, OUTPUT); // pin that triggers the relay
+  pinMode(sense, A0);  // analog input motion sensor
 }
 
-// Add loop code
+
+// Loop Code
 void loop() {
-    
-    uint16_t sensorInput = analogRead(sense);               // Value at A0
-    
-    if (sensorInput > 500) {                       // waits for milliSeconds
-        digitalWrite(pinOn, HIGH);
-        unsigned long startMillis = millis();
-        while (millis() - startMillis < seconds(3));
-    }
-    digitalWrite(pinOn, LOW);                               // Turn off light
+  turnLightOnAndWait();
+  digitalWrite(pinOn, LOW); // Turn light off
 }
 
-uint32_t seconds(uint16_t seconds){
-    uint32_t mSeconds = seconds*1000;
-    return mSeconds;
+
+uint32_t seconds(uint32_t seconds) {
+  uint32_t mSeconds = seconds * 1000;
+  return mSeconds;
+}
+
+
+void turnLightOnAndWait() {
+  uint16_t sensorInput = analogRead(sense);
+  if (sensorInput > 500) {
+    digitalWrite(pinOn, HIGH);
+    unsigned long startMillis = millis();
+    while (millis() - startMillis < seconds(90)); // waits for 90 seconds
+  }
 }
 
 
