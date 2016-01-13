@@ -49,48 +49,60 @@
 
 // Include application, user and local libraries
 
+
 // Prototypes
-
 uint32_t seconds(uint32_t seconds);
-void turnLightOnAndWait();
-
+void turnLightOn();
+void turnLightOff();
 
 // Define variables and constants
-
 const int pinOn = 10;
 int sense = 0;
 
+unsigned long lastRecognizedMotion;
+bool isLightOn = false;
+uint32_t waitingDuration = 30000;
 
 // Setup Code
 void setup() {
-  pinMode(pinOn, OUTPUT); // pin that triggers the relay
-  pinMode(sense, A0);  // analog input motion sensor
+    pinMode(pinOn, OUTPUT); // pin that triggers the relay
+    pinMode(sense, A0);  // analog input motion sensor
 }
-
 
 // Loop Code
 void loop() {
-  turnLightOnAndWait();
-  digitalWrite(pinOn, LOW); // Turn light off
+    uint16_t sensorInput = analogRead(sense);
+    if (sensorInput > 500)
+    {
+        lastRecognizedMotion = millis();
+    }
+    
+    if(!isLightOn && (millis() < lastRecognizedMotion + waitingDuration))
+    {
+        turnLightOn();
+    }
+    else if (isLightOn && (millis() > lastRecognizedMotion + waitingDuration))
+    {
+        turnLightOff();
+    }
 }
-
 
 uint32_t seconds(uint32_t seconds) {
-  uint32_t mSeconds = seconds * 1000;
-  return mSeconds;
+    uint32_t mSeconds = seconds * 1000;
+    return mSeconds;
 }
 
-
-void turnLightOnAndWait() {
-  uint16_t sensorInput = analogRead(sense);
-  if (sensorInput > 500) {
+void turnLightOn()
+{
     digitalWrite(pinOn, HIGH);
-    unsigned long startMillis = millis();
-    while (millis() - startMillis < seconds(90)); // waits for 90 seconds
-  }
+    isLightOn = true;
 }
 
-
+void turnLightOff()
+{
+    digitalWrite(pinOn, LOW); // Turn light off
+    isLightOn = false;
+}
 
 
 
